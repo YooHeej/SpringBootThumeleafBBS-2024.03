@@ -24,7 +24,7 @@ public class FileController {
 	
 	@GetMapping("/profile/{filename}")
 	public ResponseEntity<Resource> profile(@PathVariable String filename) {
-		Path path = Paths.get(uploadDir + "profile?" + filename);
+		Path path = Paths.get(uploadDir + "profile/" + filename);
 		try {
 			String contentType = Files.probeContentType(path);
 			HttpHeaders headers = new HttpHeaders();

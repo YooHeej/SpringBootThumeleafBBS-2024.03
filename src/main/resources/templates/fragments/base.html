@@ -15,6 +15,7 @@
 			a { text-decoration: none; }
 			.disabled-link { pointer-events: none; }
 		</style>
+		<script src="/abbs/js/aside.js?v=1"></script>
 	</header>
 </head>
 <body>
@@ -59,10 +60,17 @@
 					<div th:unless="${session.profile}">
 						<img src="/abbs/img/person.jpg" calss="rounded-circle" width="90%">
 					</div>
+
 					<div class="mt-2">
 						<span id="stateMsg">[[${session.stateMsg}]]</span>					
-						<a href="#"><span class="badge bg-secondary">수정</span></a>
+						<a href="#" id="stateMsgBtn"><span class="badge bg-secondary">수정</span></a>
 					</div>
+					<div id="stateMsgInput" class="mt-2 d-none">
+						<input class="form-control form-control-sm" type="text" id="stateInput"
+							onkeyup="if(window.event.keyCode==13) {changeStateMsg()}">
+						<a href="#" id="stateMsgSubmit"><span class="badge bg-primary">확인</span></a>
+					</div>
+
 					<div class="mt-5">
 						<i class="fa fa-envelope me-2"></i>[[${session.email}]]<br>
 						<i class="fa-brands fa-github me-2"></i><a href="#">[[${session.github}]]</a><br>

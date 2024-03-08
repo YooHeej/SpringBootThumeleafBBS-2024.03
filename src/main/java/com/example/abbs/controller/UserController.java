@@ -110,6 +110,11 @@ public class UserController {
 			model.addAttribute("url", "/abbs/user/login");
 		}
 		return "common/alertMsg";
-		
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session ) {
+			session.invalidate();
+			return "redirect:/user/login";
 	}
 }
