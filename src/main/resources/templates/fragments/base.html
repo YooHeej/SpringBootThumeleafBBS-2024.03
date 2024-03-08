@@ -23,7 +23,6 @@
 			<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
 				<div class="container-fluid">
 					<ul class="navbar-nav">
-						<a class="navbar-brand mx-5" href="#"><img src="/abbs/img/ck-logo.png" height="36"></a>
 						<li class="nav-item ms-3">
 							<a class="nav-link" href="#"><i class="far fa-list-alt"></i> 게시판</a>
 						</li>
@@ -34,10 +33,17 @@
 							<a class="nav-link active" href="#"><i class="fa-solid fa-calendar-days"></i> 스케쥴</a>
 						</li>
 						<li class="nav-item ms-3">
-							<a class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
+							<span th:if="${session.sessUid}">
+								<a class="nav-link" href="/abbs/user/logout"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
+							</span>
+							<span th:unless="${session.sessUid}">
+								<a class="nav-link" href="/abbs/user/login"><i class="fas fa-sign-out-alt"></i> 로그인</a>
+							</span>
 						</li>
 					</ul>
-					<span class="navbar-text me-3">홍길동님 환영합니다.</span>
+					<span th:if="${session.sessUid}">
+						<span class="navbar-text me-3">[[${session.sessUname}]] 안녕?!?</span>
+					</span>
 				</div>
 			</nav>
 		</header>
@@ -47,16 +53,21 @@
 		<div class="row">
 			<div class="col-3">
 				<aside th:fragment="aside">
-					<img src="https://picsum.photos/256/256" class="rounded-circle" width="90%">
+					<div th:if="${session.profile}">
+						<img th:src="@{/file/profile/{x}(x=${session.profile})}" class="rounded-circle" width="90%">
+					</div>
+					<div th:unless="${session.profile}">
+						<img src="/abbs/img/person.jpg" calss="rounded-circle" width="90%">
+					</div>
 					<div class="mt-2">
-						오늘의 명언을 이 자리에 적습니다.
+						<span id="stateMsg">[[${session.stateMsg}]]</span>					
 						<a href="#"><span class="badge bg-secondary">수정</span></a>
 					</div>
 					<div class="mt-5">
-						<i class="fa fa-envelope me-2"></i>ckiekim@naver.com<br>
-						<i class="fa-brands fa-github me-2"></i><a href="#">ckiekim</a><br>
-						<i class="fa-brands fa-instagram me-2"></i><a href="#">ckiekimInsta</a><br>
-						<i class="fa-solid fa-location-dot me-2"></i> 수원시 팔달구
+						<i class="fa fa-envelope me-2"></i>[[${session.email}]]<br>
+						<i class="fa-brands fa-github me-2"></i><a href="#">[[${session.github}]]</a><br>
+						<i class="fa-brands fa-instagram me-2"></i><a href="#">[[${session.insta}]]</a><br>
+						<i class="fa-solid fa-location-dot me-2"></i> [[${session.location}]]
 							<a href="#"><span class="badge bg-secondary">날씨</span></a><br>
 						<button class="btn btn-sm btn-outline-primary mt-3">Edit Profile</button>
 					</div>

@@ -16,7 +16,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.example.abbs.entity.User;
 import com.example.abbs.service.UserService;
+import com.example.abbs.util.AsideUtil;
 import com.example.abbs.util.ImageUtil;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/user")
@@ -24,6 +27,7 @@ public class UserController {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired private UserService uSvc;
 	@Autowired private ImageUtil imageUtil;
+	@Autowired private AsideUtil asideUtil;
 	@Value("${spring.servlet.multipart.location}") private String uploadDir; 
 	
 	@GetMapping("/register")
@@ -56,7 +60,7 @@ public class UserController {
 		   }
 		   User user = new User(uid, pwd, uname, email, filename, github, insta, location);
 		   uSvc.registerUser(user);
-		   model.addAttribute("msg", "등록을 마쳤다. 로그인");
+		   model.addAttribute("msg", "끝났다. 로그인");
 		   model.addAttribute("url", "/abbs/user/login");
 		   return "redirect:/user/login";
 		} else {
@@ -69,5 +73,43 @@ public class UserController {
 	@GetMapping("/login")
 	public String loginForm() {
 		return "user/login";
+	}
+	
+	@PostMapping("/login")
+	public String loginProc(String uid, String pwd, HttpSession session, Model model) {
+		int result = uSvc.login(uid, pwd);
+		switch(result) {
+		case UserService.CORRECT_LOGIN:
+			User user = uSvc.getUserByUid(uid);
+			session.setAttribute("sessUid", uid);
+			session.setAttribute("sessUname", user.getUname());
+			session.setAttribute("profile", user.getProfile());
+			session.setAttribute("email", user.getEmail());
+			session.setAttribute("github", user.getGithub());
+			session.setAttribute("insta", user.getInsta());
+			session.setAttribute("location", user.getLocation());
+			
+			// 상태 메시지
+			String quoteFile = uploadDir + "data/todayQuote.txt";
+			String stateMsg = asideUtil.getTodayQuote(quoteFile);
+			session.setAttribute("stateMsg", stateMsg);
+			
+			// 환영 메시지
+			log.info("Info Login: {}, {}", uid, user.getUname());
+			model.addAttribute("msg", user.getUname() + " 안녕?!?");
+			model.addAttribute("url", "/abbs/board/list");
+			break;
+			
+		case UserService.USER_NOT_EXIST:
+			model.addAttribute("msg", "ID가 없다. 회원가입 해라.");
+			model.addAttribute("url", "/abbs/user/register");
+			break;
+			
+		case UserService.WRONG_PASSWORD:
+			model.addAttribute("msg", "패스워드 틀렸다. 다시 해라.");
+			model.addAttribute("url", "/abbs/user/login");
+		}
+		return "common/alertMsg";
+		
 	}
 }
