@@ -17,6 +17,17 @@ public class Board {
 	
 	public Board() {}
 	
+	
+	
+	public Board(String title, String content, String uid, String files) {
+		this.title = title;
+		this.content = content;
+		this.uid = uid;
+		this.files = files;
+	}
+
+
+
 	public Board(int bid, String title, String content, String uid, LocalDateTime modTime, int isDeleted, int viewCount,
 			int replyCount, int likeCount, String files) {
 		this.bid = bid;

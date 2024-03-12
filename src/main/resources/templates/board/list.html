@@ -78,18 +78,30 @@
 					</table>
 					<!-- pagination -->
 					<ul class="pagination justify-content-center mt-4">
-						<li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-less-than"></i></a></li>
-						<div th:each="page: ${pageList}">
-						<!--	<li class="page-item [[${session.currentBoardPage eq page ? 'active' : ''}]]"> -->
-						<span th:switch="page: ${page}">
+						<span th:if="${session.currentBoardPage gt 10}">
+							<li class="page-item"><a class="page-link" th:href="@{/board/list(p=${startPage-1},f=${field},q=${query})}"><i class="fa-solid fa-less-than"></i></a></li>
+						</span>
+						<span th:if="${session.currentBoardPage le 10}">
+							<li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-less-than"></i></a></li>
+						</span>
+						<span th:each="page: ${pageList}">
+							<!-- <li class="page-item" th:classappend="${session.currentBoardPage eq page ? 'active' : ''}">
+								<span th:if="${session.currentBoardPage eq page}">
+									<a class="page-link" href="#">[[${page}]]</a>
+								</span>
+								<span th:if="${session.currentBoardPage ne page}">
+									<a class="page-link" th:href="@{/board/list(p=${page},f=${field},q=${query})}">[[${page}]]</a>
+								</span>
+							</li> -->
+							<span th:switch="${page}">
 							<th:block th:case="${session.currentBoardPage}">
 								<li class="page-item active">
 									<a class="page-link" href="#">[[${page}]]</a>
 								</li>
 							</th:block>
 							<th:block th:case="*">
-								<liclass="page-item">
-									<a class="page-link" th:href="@{/board/list(p=${page},f=${field},q=${query}}">[[${page}]]</a>
+								<li class="page-item">
+									<a class="page-link" th:href="@{/board/list(p=${page},f=${field},q=${query})}">[[${page}]]</a>
 								</li>
 							</th:block>
 							</span>
