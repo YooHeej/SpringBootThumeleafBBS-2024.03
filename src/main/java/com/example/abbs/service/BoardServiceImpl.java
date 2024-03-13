@@ -57,11 +57,10 @@ public class BoardServiceImpl implements BoardService{
 		boardDao.increaseCount(field, bid);
 	}
 
+
 	@Override
-	public void increaseLikeCount(int bid) {
-		String field = "likeCount";
-		boardDao.increaseCount(field, bid);
-		
+	public void updateLikeCount(int bid, int count) {
+		boardDao.updateLikeCount(bid, count);
 		
 	}
 
