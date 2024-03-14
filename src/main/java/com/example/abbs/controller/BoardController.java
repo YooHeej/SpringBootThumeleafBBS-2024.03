@@ -36,6 +36,7 @@ public class BoardController {
 	@Autowired private LikeService likeService;
 	@Autowired private JsonUtil jsonUtil;
 	@Value("${spring.servlet.multipart.location}") private String uploadDir;
+	private String menu = "board";
 	
 	@GetMapping("/list")
 	public String list(@RequestParam(name="p", defaultValue="1") int page,
@@ -60,24 +61,26 @@ public class BoardController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("pageList", pageList);
+		model.addAttribute("menu", menu);
 		
 		return "board/list";
 	}
 	
 	@GetMapping("/insert")
-	public String insertForm() {
+	public String insertForm(Model model) {
+		model.addAttribute("menu", menu);
 		return "board/insert";
 	}
 	
 	@PostMapping("/insert")
 	public String insertProc(String title, String content, MultipartHttpServletRequest req,
-			HttpSession session) {
+			 HttpSession session) {
 		String sessUid = (String) session.getAttribute("sessUid");
 		List<MultipartFile> uploadFileList = req.getFiles("files");
 		
 		
 		List<String> fileList = new ArrayList<>();
-		for (MultipartFile part:uploadFileList) {
+		for (MultipartFile part: uploadFileList) {
 			// 첨부 파일이 없는 경우 - application/octet-stream
 			if (part.getContentType().contains("octet-stream"))
 				continue;
@@ -123,6 +126,7 @@ public class BoardController {
 		
 		List<Reply> replyList = replyService.getReplyList(bid);
 		model.addAttribute("replyList", replyList);
+		model.addAttribute("menu", menu);
 		return "board/detail";
 	}
 	

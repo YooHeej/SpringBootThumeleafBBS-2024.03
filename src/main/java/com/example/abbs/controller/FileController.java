@@ -111,7 +111,7 @@ public class FileController {
 		String ajaxResponse = "<script>"
 	            + "   window.parent.CKEDITOR.tools.callFunction(" //-> 1, '/abbs/file/download/132345./png',
 	            +       callback + ", '" + url + "', '" + error + "'"
-	            + "   );"
+	            + "    );"
 	            + "</script>";
 		return ajaxResponse;
 	}

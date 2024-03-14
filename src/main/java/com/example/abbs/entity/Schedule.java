@@ -15,7 +15,6 @@ public class Schedule {
 
 	public Schedule(int sid, String uid, String sdate, String title, String place, String startTime, String endTime,
 			int isImportant, String memo) {
-		super();
 		this.sid = sid;
 		this.uid = uid;
 		this.sdate = sdate;
