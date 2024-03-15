@@ -24,8 +24,6 @@
 			<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
 				<div class="container-fluid">
 					<ul class="navbar-nav">
-					</ul>
-					<ul class="navbar-nav ms-auto">
 						<li class="nav-item ms-3">
 							<a class="nav-link" th:classappend="${menu eq 'board' ? 'active' : ''}" href="/abbs/board/list"><i class="far fa-list-alt"></i> 게시판</a>
 						</li>
@@ -43,15 +41,10 @@
 								<a class="nav-link" href="/abbs/user/login"><i class="fas fa-sign-in-alt"></i> 로그인</a>
 							</span>
 						</li>
-						<li class="nav-item ms-3">
-						<span th:if="${session.sessUid}">
-							<span class="navbar-text me-3">[[${session.sessUname}]]님 환영합니다.</span>
-						</span>
-						<span th:unless="${session.sessUid}">
-							<a class="nav-link" href="/abbs/user/register"><i class="fa-solid fa-circle-user"></i> 회원 가입</a>
-						</span>
-						</li>
 					</ul>
+					<span th:if="${session.sessUid}">
+						<span class="navbar-text me-3">[[${session.sessUname}]] 안녕?!?</span>
+					</span>
 				</div>
 			</nav>
 		</header>
