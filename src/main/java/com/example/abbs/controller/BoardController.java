@@ -36,7 +36,7 @@ public class BoardController {
 	@Autowired private LikeService likeService;
 	@Autowired private JsonUtil jsonUtil;
 	@Value("${spring.servlet.multipart.location}") private String uploadDir;
-	private String menu = "board";
+	
 	
 	@GetMapping("/list")
 	public String list(@RequestParam(name="p", defaultValue="1") int page,
@@ -61,14 +61,13 @@ public class BoardController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("pageList", pageList);
-		model.addAttribute("menu", menu);
+		
 		
 		return "board/list";
 	}
 	
 	@GetMapping("/insert")
-	public String insertForm(Model model) {
-		model.addAttribute("menu", menu);
+	public String insertForm( ) {
 		return "board/insert";
 	}
 	
@@ -126,7 +125,6 @@ public class BoardController {
 		
 		List<Reply> replyList = replyService.getReplyList(bid);
 		model.addAttribute("replyList", replyList);
-		model.addAttribute("menu", menu);
 		return "board/detail";
 	}
 	
@@ -166,6 +164,56 @@ public class BoardController {
 		return "board/detail::#likeCount";
 	}
 	
+	@GetMapping("/update/{bid}")
+	public String updateForm(@PathVariable int bid, HttpSession session, Model model) {
+		Board board = boardService.getBoard(bid);
+		String jsonFiles = board.getFiles();
+		if (jsonFiles != null) {
+			List<String> fileList = jsonUtil.json2List(jsonFiles);
+			session.setAttribute("fileList", fileList);
+		}
+		model.addAttribute("board", board);
+		return "board/update";
+	}
+	
+	@PostMapping("/update")
+	public String updateProc(int bid, String uid, MultipartHttpServletRequest req, HttpSession session) {
+		String title = req.getParameter("title");
+		String content = req.getParameter("content");
+		String sessUid = (String) session.getAttribute("sessUid");
+		
+		List<String> additionalFileList = (List<String>) session.getAttribute("fileList");
+		if (additionalFileList == null)
+			additionalFileList = new ArrayList<>();
+		String[] delFileList = req.getParameterValues("delFile");
+		if (delFileList != null) {
+			for (String delName: delFileList) {
+				File delFile = new File(uploadDir + "upload/" + delName);
+				delFile.delete();
+				additionalFileList.remove(delName);
+			}
+		}
+		
+		List<MultipartFile> fileList = req.getFiles("files");
+		for (MultipartFile part: fileList) {
+			if (part.getContentType().contains("octet-stream"))
+				continue;
+			String filename = part.getOriginalFilename();
+			additionalFileList.add(filename);
+			String uploadFile = uploadDir + "upload/" + filename;
+			File file = new File(uploadFile);
+			try {
+				part.transferTo(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		String files = jsonUtil.list2Json(additionalFileList);
+		Board board = new Board(bid, title, content, uid, files);
+		boardService.updateBoard(board);
+		return "redirect:/board/detail/" + bid + "/" + sessUid;
+	}
 //	@GetMapping("/update")
 //	public String update(@PathVariable int bid, Model model) {
 //		Board board = boardService.getBoard(bid);

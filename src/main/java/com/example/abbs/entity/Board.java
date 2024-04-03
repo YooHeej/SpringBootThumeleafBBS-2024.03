@@ -25,6 +25,16 @@ public class Board {
 		this.uid = uid;
 		this.files = files;
 	}
+	
+
+
+	public Board(int bid, String title, String content, String uid, String files) {
+		this.bid = bid;
+		this.title = title;
+		this.content = content;
+		this.uid = uid;
+		this.files = files;
+	}
 
 
 
@@ -65,7 +75,7 @@ public class Board {
 	public String toString() {
 		return "Board [bid=" + bid + ", title=" + title + ", content=" + content + ", uid=" + uid + ", modTime="
 				+ modTime + ", isDeleted=" + isDeleted + ", viewCount=" + viewCount + ", replyCount=" + replyCount
-				+ ", likeCount=" + likeCount + ", files=" + files + ", uname=" + uname + "]";
+				+ ", likeCount=" + likeCount + ", files=" + files + "]";
 	}
 
 	public int getBid() {
